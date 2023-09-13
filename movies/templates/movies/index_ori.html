@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>영화정보</h1>
+
+
+<div class="row">
+    {% for movie in movies %}
+        {% include 'movies/_card.html' %}
+    {% endfor %}
+</div>
+
+<!-- {% for movie in movies %}
+<p>
+    {% if movie.image %}
+    <img src="{{ movie.image }}" alt="." width="100">
+    {% endif %}
+    <a href="{% url 'movies:movie_detail' movie.id %}">{{ movie.title }}</a>
+</p>
+{% endfor %} -->
+
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'index_sample/css/style.css' %}">
+{% endblock %}

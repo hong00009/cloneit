@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center">{{user_info.username}}님</h1>
+</div>
+
+<div class="m-2">
+    <div class="row">
+        <div class="col-9">
+            <p class="d-flex"> 영화평가: {{ user_info.comments.count }}개</p>
+            <br>
+        </div>
+        <div class="col-12">
+            {% for comment in comments %}
+            <div class="d-flex">
+                <p><a href="{% url 'movies:movie_detail' comment.movie.id %}">{{ comment.movie.title }}</a> 한줄평 : ★ {{ comment.rating }} | {{ comment.content }} | {{ comment.created_at |naturaltime}}</p>
+                {% if user.is_authenticated and user == comment.user %}
+                <form method="POST" action="{% url 'movies:comment_delete' comment.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm"
+                        style="align-self: baseline;">삭제</button>
+                </form>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>작성된 댓글이 없습니다.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

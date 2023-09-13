@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ participant.name }}</h1>
+    
+    <h2>참여한 영화</h2>
+    <ul>
+        {% for role in roles %}
+        <li><a href="{% url 'movies:movie_detail' role.movie.id %}">{{ role.movie.title }}</a> {% if role.role_type %} ({{ role.get_role_type_display }}) {% endif %}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

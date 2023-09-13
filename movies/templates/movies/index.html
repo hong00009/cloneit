@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% load static %} 
+
+{% block content %}
+
+        <!-- Page Content-->
+        <div class="container px-4 px-lg-5">
+            <!-- Heading Row-->
+            <div class="row gx-4 gx-lg-5 align-items-center my-5">
+                <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="https://postfiles.pstatic.net/MjAyMzA2MjRfMjE0/MDAxNjg3NTcxMzc1MTMx.4Ck-W0FvYw3eDFAsyaApwe7g9U9knbQJp78cDI9Yfqsg.Hl5vYSTumz2PgWuh-OqLIvklFsA-eghtcWiwcw0XvN0g.JPEG.ban1329/34.jpg?type=w966" alt="..." /></div>
+                <div class="col-lg-5">
+                    <h1 class="font-weight-light">최신작</h1>
+                    <h3>미션 임파서블: 데드 레코닝 PART ONE</h3>
+                    <h5>가장 위험한 작전, 그의 마지막 선택</h5>
+                    <p>모든 인류를 위협할 새로운 무기를 추적하게 된 에단 헌트(톰 크루즈)와 IMF팀은 이 무기가 인류의 미래를 통제할 수 있다는 사실을 알게 된다. 전 세계가 위태로운 상황에 처한 가운데, 이를 추적하던 에단 헌트에게 어둠의 세력까지 접근하고 마침내 미스터리하고 강력한 빌런과 마주하게 된 그는 가장 위험한 작전을 앞두고 자신이 아끼는 사람들의 생명과 중요한 임무 사이에서 선택을 해야 하는 상황에 놓이게 되는데…</p>
+                    <a class="btn btn-primary" href="{% url 'movies:movie_detail' 37 %}">자세히</a>
+                </div>
+            </div>
+            <!-- Call to Action-->
+            <div class="card text-white bg-secondary my-5 py-4 text-center">
+                <div class="card-body"><h2 class="text-white m-0">영화 평가수 TOP 5 </h2></div>
+            </div>
+            <!-- Content Row-->
+            <div class="row gx-4 gx-lg-5">
+
+                    {% for movie in movies %}
+                        {% include 'movies/_card.html' %}
+                    {% endfor %}
+
+            </div>
+        </div>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container px-4 px-lg-5"><p class="m-0 text-center text-white">Copyright &copy; 영화영화영 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/static/index_sample/js/scripts.js"></script>
+{% endblock %}

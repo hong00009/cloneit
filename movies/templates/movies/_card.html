@@ -1,0 +1,11 @@
+{% load bootstrap5 %}
+<div class="col-md-auto">
+    <div class="card mb-5" style="width: 12rem;">
+        <a href="{% url 'movies:movie_detail' movie.id %}">
+            <img src="{{ movie.image }}" class="card-img-top" alt="...">
+        </a>
+        <div class="card-body">
+            <p>{{ movie.title }} | ★{{ movie.average_rating }} ({{ movie.comment_set.count }}명 평가)</p>
+        </div>
+    </div>
+</div>

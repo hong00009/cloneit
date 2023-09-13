@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load bootstrap5 %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<!-- Header - set the background image for the header in the line below-->
+<header class="py-5 bg-image-full" style="background-image: url('https://source.unsplash.com/wfh8dDlNFOk/1600x900')">
+    <div class="text-center my-5">
+        <img class="img-fluid rounded mb-4" src="{{ poster_url }}" alt="..." />
+        <h1 class="text-white fs-3 fw-bolder">{{ movie.title }}</h1>
+        <p class="text-white-50 mb-0">{{ movie.release_year }}</p>
+    </div>
+</header>
+<!-- Content section-->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+            <ul>
+                <li>개봉년도: {{ movie.release_year }}</li>
+                <li>연령제한: {{ movie.get_age_limit_display }}</li>
+                <li>장르:
+                    {% for genre in movie.genres.all %}
+                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+                <li>국가:
+                    {% for country in movie.countries.all %}
+                    {{ country.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+                <li>상영시간: {{ movie.duration }}분</li>
+                <!-- <li>평점: {{ movie.rating }}</li> -->
+                <li>관람객수: {{ movie.audience_count | intcomma }}명</li>
+                <li>제작사: {{ movie.production_company }}</li>
+            </ul>
+            <h2>출연/제작</h2>
+            <ul>
+                {% for role in movie_roles %}
+                {% if role.role_type == 'director' %}
+                <li>감독: <a href="{% url 'movies:participant_detail' role.participant.id %}">{{role.participant.name}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% for role in movie_roles %}
+                {% if role.role_type == 'leading' %}
+                <li>주연: <a href="{% url 'movies:participant_detail' role.participant.id %}">{{role.participant.name}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% for role in movie_roles %}
+                {% if role.role_type == 'supporting' %}
+                <li>조연: <a href="{% url 'movies:participant_detail' role.participant.id %}">{{role.participant.name}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% for role in movie_roles %}
+                {% if role.role_type != 'director' and role.role_type != 'leading' and role.role_type != 'supporting' %}
+                <li><a href="{% url 'movies:participant_detail' role.participant.id %}">{{ role.participant.name }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+        </div>
+    </div>
+</section>
+<!-- Image element - set the background image for the header in the line below-->
+<div class="py-5 bg-image-full" style="background-image: url('https://source.unsplash.com/4ulffa6qoKA/1200x800')">
+    <!-- Put anything you want here! The spacer below with inline CSS is just for demo purposes!-->
+    <div style="height: 1rem"></div>
+</div>
+<!-- Content section-->
+<section class="py-5">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h3 style="display: inline;">코멘트 / 평균 ★{{ average_rating }} </h3>
+                <h6 style="display: inline;">({{ comments.count }}개) </h6>
+
+                {% if request.user.is_authenticated %}
+                {% if not already_done %}
+                <form method="POST" action="{% url 'movies:comments_create' movie.id %}">
+                    {% csrf_token %}
+
+                    <style>
+                        .form-select {
+                            width: 80px;
+                        }
+                    </style>
+
+                    <div class="d-flex align-items-center">
+                        {{ comment_form.content }}
+                        <select class="form-select form-select-sm" name="rating" required>
+                            <option value="" selected disabled>점수</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">작성</button>
+                    </div>
+                </form>
+                {% else %}
+                <p>이미 평가한 영화입니다.</p>
+                {% endif %}
+                {% else %}
+                <p>작성하시려면 로그인이 필요합니다.</p>
+                {% endif %}
+
+                {% for comment in comments %}
+                <div style="display: flex; align-items: center;">
+                    <p class="commnet-text"> ★{{ comment.rating }}점 <a
+                            href="{% url 'accounts:profile' comment.user.username %}">
+                            {{ comment.user.username }}</a>
+                        - {{ comment.content }} | {{ comment.created_at | naturaltime }} </p>
+                    {% if user.is_authenticated and user == comment.user %}
+                    <form method="POST" action="{% url 'movies:comment_delete' comment.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                            style="align-self: baseline;">삭제</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p>작성된 댓글이 없습니다.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; 영화영화영 2023</p>
+    </div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="/static/movie_detail_sample/js/scripts.js"></script>
+{% endblock %}
